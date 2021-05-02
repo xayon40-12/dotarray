@@ -1,5 +1,6 @@
 module Segment where
 
+import Debug.Trace
 import Vec
 
 --       dA -- A ---- B -- dB
@@ -28,16 +29,30 @@ type Fun2 = P2 -> Double
 grad :: Double -> Fun2 -> P2 -> P2
 grad h f (x, y) = (dx, dy)
   where
-    dx = (f (x + h, y) - f (x, y)) / h
-    dy = (f (x, y + h) - f (x, y)) / h
+    fxy = f (x, y)
+    dx = (f (x + h, y) - fxy) / h
+    dy = (f (x, y + h) - fxy) / h
 
 descent :: Int -> Double -> Fun2 -> P2 -> Either Double P2
-descent 0 _ f p = Left $ f p
-descent m h f p@(x, y) = if d < h then Right pn else descent (m -1) h f pn
+descent m h f = go m 1
   where
-    (dx, dy) = grad (h / 10) f p -- FIXME should be normalized and multiplied by an epsilon, or I should use the "log grad descent"
-    pn = (x - dx, y - dy)
-    d = f pn
+    gh = h / 2
+    go 0 _ p = Left $ f p
+    go i e p = if dn < h then trace ("i: " ++ show (m - i)) $ Right pn else go (i - is) en pn
+      where
+        (en, pn, dn, is) = down f e gh p
+
+down :: Fun2 -> Double -> Double -> P2 -> (Double, P2, Double, Int)
+down f e' h p' = go e' p' (f p') 1
+  where
+    n = 10 -- FIXME have a better way to fix it
+    g = grad h f
+    go e p@(x, y) d i = if dn > d then (e / n, p, d, i) else go en pn dn (i + 1)
+      where
+        (dx, dy) = g p
+        pn = (x - dx * e, y - dy * e)
+        dn = f pn
+        en = e * n
 
 -- Ray pos dir
 data Ray = Ray Vec Vec
