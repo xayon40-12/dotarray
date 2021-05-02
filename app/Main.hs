@@ -9,8 +9,9 @@ main = do
   let p = cubical2 sq (0.5, 0.5)
   print p
   let s = Segment (Vec 0 1 0) (Vec 0 0 0) (Vec 1 0 0) (Vec 0 (-1) 0)
-  let r = Ray (Vec 0.5 10 0) (Vec 0 (-1) 0)
-  print $ descent 1000 1e-4 (dist s r) (0, 0)
+  let r x = Ray (Vec x 10 0) (Vec 0 (-1) 0)
+  let n = 10
+  print $ (\x -> cast s (r x)) <$> (/ n) <$> [0 .. n]
 
 sq :: Square
 sq = Square dht dht ab dc dhb dhb

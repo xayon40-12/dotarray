@@ -19,12 +19,17 @@ cubical (Segment da pa pb db) x = r
     a = pb .-. d .-. c .-. b
     r = a .* x ** 3 .+. b .* x ** 2 .+. c .* x .+. d
 
-dist :: Segment -> Ray -> P2 -> Double
-dist s (Ray p d) (x, t) = norm $ cubical s x .-. (p .+. t *. d)
+cast :: Segment -> Ray -> Maybe P2
+cast s r = res >>= (\res'@(_, x) -> if x >= 0 && x <= 1 then Just res' else Nothing)
+  where
+    res = descent 1000 1e-5 (dist r s) (0, 0.5)
 
 type P2 = (Double, Double)
 
 type Fun2 = P2 -> Double
+
+dist :: Ray -> Segment -> P2 -> Double
+dist (Ray p d) s (t, x) = norm $ cubical s x .-. (p .+. t *. d)
 
 grad :: Double -> Fun2 -> P2 -> P2
 grad h f (x, y) = (dx, dy)
@@ -33,24 +38,24 @@ grad h f (x, y) = (dx, dy)
     dx = (f (x + h, y) - fxy) / h
     dy = (f (x, y + h) - fxy) / h
 
-descent :: Int -> Double -> Fun2 -> P2 -> Either Double P2
-descent m h f = go m 1
+descent :: Int -> Double -> Fun2 -> P2 -> Maybe P2
+descent m' h f = go m' 1
   where
     gh = h / 2
-    go 0 _ p = Left $ f p
-    go i e p = if dn < h then trace ("i: " ++ show (m - i)) $ Right pn else go (i - is) en pn
+    go 0 _ _ = Nothing
+    go m e p = if dn < h then trace ("m: " ++ show (m' - m)) $ Just pn else go mn en pn
       where
-        (en, pn, dn, is) = down f e gh p
+        (en, pn, dn, mn) = down (m -1) f e gh p
 
-down :: Fun2 -> Double -> Double -> P2 -> (Double, P2, Double, Int)
-down f e' h p' = go e' p' (f p') 1
+down :: Int -> Fun2 -> Double -> Double -> P2 -> (Double, P2, Double, Int)
+down m' f e' h p' = go m' e' p' (f p')
   where
     n = 10 -- FIXME have a better way to fix it
     g = grad h f
-    go e p@(x, y) d i = if dn > d then (e / n, p, d, i) else go en pn dn (i + 1)
+    go m e p@(x, y) d = if dn > d || m == 0 then (e / n, p, d, m) else go (m -1) en pn dn
       where
         (dx, dy) = g p
-        pn = (x - dx * e, y - dy * e)
+        pn = (x - dx * 2 * e, y - dy * e) -- NOTE *2 to prioritize first coord
         dn = f pn
         en = e * n
 
