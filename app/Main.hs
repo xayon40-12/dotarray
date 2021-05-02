@@ -1,13 +1,12 @@
 module Main where
 
-import Interpolate
 import Segment
 import Square
 import Vec
 
 main :: IO ()
 main = do
-  let p = cubical sq (0.5 :: Double, 0.5 :: Double) :: Vec
+  let p = cubical2 sq (0.5, 0.5)
   print p
 
 sq :: Square

@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: dae3867151aaa11a06176a5db67f9335a9f2b62b6ce5eab726ea3280c6b4fff9
+-- hash: 9b5850be048eb3c8dc575797294c57bdfcafaf4febc978852130d81a8d8850eb
 
 name:           dotarray
 version:        0.1.0.0
@@ -26,7 +26,6 @@ source-repository head
 
 library
   exposed-modules:
-      Interpolate
       Segment
       Square
       Vec
