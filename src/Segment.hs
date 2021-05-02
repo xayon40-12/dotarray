@@ -43,7 +43,7 @@ descent m' h f = go m' 1
   where
     gh = h / 2
     go 0 _ _ = Nothing
-    go m e p = if dn < h then trace ("m: " ++ show (m' - m)) $ Just pn else go mn en pn
+    go m e p = if dn < h then Just pn else go mn en pn
       where
         (en, pn, dn, mn) = down (m -1) f e gh p
 
