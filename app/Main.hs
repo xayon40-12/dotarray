@@ -1,6 +1,5 @@
 module Main where
 
-import Data.Maybe (isNothing)
 import Segment
 import Square
 import Vec
@@ -12,7 +11,8 @@ main = do
   let s = Segment (Vec 0 1 0) (Vec 0 0 0) (Vec 1 0 0) (Vec 0 (-1) 0)
   let r x = Ray (Vec x 10 0) (Vec 0 (-1) 0)
   let n = 1000
-  print $ foldl (\a i -> (if isNothing i then '@' else '-') : a) "" $ cast s . r . (/ n) <$> [0 .. n]
+  let c = cast s . r . (/ n) <$> [0 .. n]
+  print $ foldl (\a i -> maybe "@" (\(_, m) -> show m) i ++ ' ' : a) "" c
 
 sq :: Square
 sq = Square dht dht ab dc dhb dhb
