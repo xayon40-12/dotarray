@@ -1,6 +1,5 @@
 module Segment where
 
-import Debug.Trace (trace)
 import Vec
 
 --       dA -- A ---- B -- dB
@@ -26,10 +25,9 @@ data Ray = Ray Vec Vec deriving (Show)
 clamp :: Double -> Double -> Double -> Double
 clamp mi ma x = min ma $ max mi x
 
-cast :: Segment -> Ray -> Maybe (P2, Int)
-cast s r@(Ray p _) = res
+cast :: Double -> Segment -> Ray -> Maybe (P2, Int)
+cast h s r@(Ray p _) = res
   where
-    h = 1e-3
     post (i, j) = (max 0 i, clamp 0 1 j) -- NOTE max 0 i as t must be >=0, clamp 0 1 as the x coordinate should stay in [0,1]
     x = 0.5
     t = norm $ p .-. cubical s x
