@@ -27,11 +27,13 @@ clamp :: Double -> Double -> Double -> Double
 clamp mi ma x = min ma $ max mi x
 
 cast :: Segment -> Ray -> Maybe (P2, Int)
-cast s r = res
+cast s r@(Ray p _) = res
   where
     h = 1e-3
     post (i, j) = (max 0 i, clamp 0 1 j) -- NOTE max 0 i as t must be >=0, clamp 0 1 as the x coordinate should stay in [0,1]
-    res = descent 1000 post h (dist r s) (0, 0.5)
+    x = 0.5
+    t = norm $ p .-. cubical s x
+    res = descent 1000 post h (dist r s) (t, x)
 
 type P2 = (Double, Double)
 
@@ -66,7 +68,7 @@ down m' post f e' h p' = go m' e' p' (f p')
     go m e p@(x, y) d = if dn > d || m == 0 then (e / n, p, d, m) else go (m -1) en pn dn
       where
         (dx, dy) = g p
-        no = 1 / sqrt (dx * dx + dy * dy)
+        no = 1 / (dx * dx + dy * dy)
         pn = post (x - dx * no * e, y - dy * no * e)
         dn = f pn
         en = e * n
