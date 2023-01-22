@@ -40,7 +40,11 @@ type Fun2 = P2 -> Double
 type Post = P2 -> P2
 
 dist :: Ray -> Segment -> P2 -> Double
-dist (Ray p d) s (t, x) = norm2 $ cubical s x .-. (p .+. t *. d) -- NOTE using norm2 is a lot better than norm
+dist (Ray p d) s (t, x) = dtx*nonNeg*nearest
+  where
+    dtx = norm2 $ cubical s x .-. (p .+. t *. d) -- NOTE using norm2 is a lot better than norm
+    nonNeg = 1+exp(-t)
+    nearest = 1+t
 
 grad :: Double -> Fun2 -> P2 -> P2
 grad h f (x, y) = (dx, dy)

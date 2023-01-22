@@ -1,10 +1,10 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.33.0.
+-- This file has been generated from package.yaml by hpack version 0.34.4.
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 9b5850be048eb3c8dc575797294c57bdfcafaf4febc978852130d81a8d8850eb
+-- hash: 8c0a64b8f51b6b7235fbd6a367293146d2fd93b6fc7cd5b998eda6eefaca0dde
 
 name:           dotarray
 version:        0.1.0.0
@@ -33,7 +33,9 @@ library
       Paths_dotarray
   hs-source-dirs:
       src
-  default-extensions: FlexibleInstances MultiParamTypeClasses
+  default-extensions:
+      FlexibleInstances
+      MultiParamTypeClasses
   ghc-options: -Wall
   build-depends:
       base >=4.7 && <5
@@ -45,7 +47,9 @@ executable dotarray-exe
       Paths_dotarray
   hs-source-dirs:
       app
-  default-extensions: FlexibleInstances MultiParamTypeClasses
+  default-extensions:
+      FlexibleInstances
+      MultiParamTypeClasses
   ghc-options: -Wall -threaded -rtsopts -with-rtsopts=-N
   build-depends:
       base >=4.7 && <5
